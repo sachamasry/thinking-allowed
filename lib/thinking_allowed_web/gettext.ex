@@ -20,5 +20,5 @@ defmodule ThinkingAllowedWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :thinking_allowed
+  use Gettext.Backend, otp_app: :thinking_allowed
 end

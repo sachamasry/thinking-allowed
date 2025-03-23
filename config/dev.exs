@@ -55,7 +55,10 @@ config :thinking_allowed, ThinkingAllowedWeb.Endpoint,
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/thinking_allowed_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/thinking_allowed_web/(controllers|live|components)/.*(ex|heex)$",
+      ~r"lib/thinking_allowed_web/(live|components)/.*neex$",
+      ~r"lib/thinking_allowed_web/styles/.*ex$",
+      ~r"priv/static/*.styles$"
     ]
   ]
 
@@ -77,3 +80,7 @@ config :phoenix_live_view,
   debug_heex_annotations: true,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
+
+config :live_view_native_stylesheet,
+  annotations: true,
+  pretty: true

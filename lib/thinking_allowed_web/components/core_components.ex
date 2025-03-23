@@ -17,7 +17,8 @@ defmodule ThinkingAllowedWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import ThinkingAllowedWeb.Gettext
+  # import ThinkingAllowedWeb.Gettext
+  use Gettext, backend: ThinkingAllowedWeb.Gettext
 
   @doc """
   Renders a modal.

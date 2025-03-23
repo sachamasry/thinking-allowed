@@ -1,0 +1,5 @@
+<Text>My first LiveView Native App (iOS)!</Text>
+<VStack>
+  <Text><%= @counter %></Text>
+  <Button phx-click="incr">+1</Button>
+</VStack>
