@@ -1,5 +1,9 @@
-<Text>My first LiveView Native App (iOS)!</Text>
-<VStack>
-  <Text><%= @counter %></Text>
-  <Button phx-click="incr">+1</Button>
+<VStack spacing="20">
+  <Text font="title" alignment="center">
+    Welcome to Thinking Allowed!
+  </Text>
+
+  <Button phx-click="navigate" phx-value-to="/audio">
+    <Text>Go to Audio Page</Text>
+  </Button>
 </VStack>

@@ -24,6 +24,9 @@ defmodule ThinkingAllowedWeb.Router do
 
     # get "/", PageController, :home
     live "/", HomeLive
+    live "/recorder", RecorderLive
+    live "/audio", AudioLive
+
   end
 
   # Other scopes may use custom stacks.

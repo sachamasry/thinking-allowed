@@ -39,7 +39,8 @@ defmodule ThinkingAllowedNative do
         ],
         layouts: [
           swiftui: {ThinkingAllowedWeb.Layouts.SwiftUI, :app}
-        ]
+        ],
+        dispatch_to: &Module.concat/2
 
       unquote(verified_routes())
     end
@@ -113,7 +114,7 @@ defmodule ThinkingAllowedNative do
     quote do
       use LiveViewNative.Component, unquote(opts)
 
-      import LiveViewNative.Component, only: [csrf_token: 1]
+      import LiveViewNative.Component, only: [csrf_token: 2]
 
       unquote(helpers(opts[:format]))
     end

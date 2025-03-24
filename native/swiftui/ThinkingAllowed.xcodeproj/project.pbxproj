@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -39,7 +39,7 @@
 		9D7F2FAD70D7CE00482D5E5B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A70DE16536A8A22A369E656D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF8CA92D1CBABA33CF57DD9A /* ThinkingAllowed Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ThinkingAllowed Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D53FF7FD8038E9219AFF41A3 /* ThinkingAllowed.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ThinkingAllowed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D53FF7FD8038E9219AFF41A3 /* ThinkingAllowed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThinkingAllowed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,8 +157,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 413726668CE57F75A9DABD51 /* Build configuration list for PBXProject "ThinkingAllowed" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -324,6 +322,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEVELOPMENT_TEAM = C472L2ZJGG;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -354,6 +354,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				DEVELOPMENT_TEAM = C472L2ZJGG;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -474,7 +476,7 @@
 			repositoryURL = "https://github.com/liveview-native/liveview-client-swiftui";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = "0.4.0-rc.1";
 			};
 		};
 		822147EB13D8EA4979F26C2A /* XCRemoteSwiftPackageReference "liveview-native-live-form" */ = {
@@ -482,7 +484,7 @@
 			repositoryURL = "https://github.com/liveview-native/liveview-native-live-form";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = "0.4.0-rc.1";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

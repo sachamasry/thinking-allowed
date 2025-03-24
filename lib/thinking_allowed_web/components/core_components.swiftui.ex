@@ -80,145 +80,153 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
 
   slot :inner_block
 
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
-    assigns
-    |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
-    |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
-    |> assign_new(:value, fn -> field.value end)
-    |> assign(
-      :rest,
-      Map.put(assigns.rest, :style, [
-        Map.get(assigns.rest, :style, ""),
-        (if assigns.readonly or Map.get(assigns.rest, :disabled, false), do: "disabled(true)", else: ""),
-        (if assigns.autocomplete == "off", do: "textInputAutocapitalization(.never) autocorrectionDisabled()", else: "")
-      ] |> Enum.join(" "))
-    )
-    |> input()
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns, interface) do
+    assigns =
+      assigns
+      |> assign(field: nil, id: assigns.id || field.id)
+      |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
+      |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
+      |> assign_new(:value, fn -> field.value end)
+
+    styles =
+      [{:readonly, assigns.readonly} , {:autocomplete, assigns.autocomplete}]
+      |> Enum.reduce([], fn
+        {:readyonly, true}, styles -> ["disabled(true)" | styles]
+        {:autocomplete, "off"}, styles -> ["textInputAutocapitalization(.never)", "autocorrectionDisabled()" | styles]
+        _, styles -> styles
+      end)
+
+    style =
+      Map.get(assigns.rest, :style, "")
+      |> String.split(";")
+      |> Kernel.++(Enum.reverse(styles))
+      |> Enum.join(";")
+
+    input(put_in(assigns, [:rest, :style], style), interface)
   end
 
-  def input(%{type: "hidden"} = assigns) do
+  def input(%{type: "hidden"} = assigns, _interface) do
     ~LVN"""
     <LiveHiddenField id={@id} name={@name} value={@value} {@rest} />
     """
   end
 
-  def input(%{type: "TextFieldLink"} = assigns) do
+  def input(%{type: "TextFieldLink"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
+        <Text template="label">{@label}</Text>
         <TextFieldLink id={@id} name={@name} value={@value} prompt={@prompt} {@rest}>
-          <%= @label %>
+          {@label}
         </TextFieldLink>
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "DatePicker"} = assigns) do
+  def input(%{type: "DatePicker"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <DatePicker id={@id} name={@name} selection={@value} {@rest}>
-        <%= @label %>
+        {@label}
       </DatePicker>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "MultiDatePicker"} = assigns) do
+  def input(%{type: "MultiDatePicker"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
-        <MultiDatePicker id={@id} name={@name} selection={@value} {@rest}><%= @label %></MultiDatePicker>
+        <Text template="label">{@label}</Text>
+        <MultiDatePicker id={@id} name={@name} selection={@value} {@rest}>{@label}</MultiDatePicker>
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "Picker"} = assigns) do
+  def input(%{type: "Picker"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <Picker id={@id} name={@name} selection={@value} {@rest}>
-        <Text template="label"><%= @label %></Text>
+        <Text template="label">{@label}</Text>
         <Text
           :for={{name, value} <- @options}
           tag={value}
         >
-          <%= name %>
+          {name}
         </Text>
       </Picker>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "Slider"} = assigns) do
+  def input(%{type: "Slider"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
-        <Slider id={@id} name={@name} value={@value} lowerBound={@min} upperBound={@max} {@rest}><%= @label %></Slider>
+        <Text template="label">{@label}</Text>
+        <Slider id={@id} name={@name} value={@value} lowerBound={@min} upperBound={@max} {@rest}>{@label}</Slider>
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "Stepper"} = assigns) do
+  def input(%{type: "Stepper"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
+        <Text template="label">{@label}</Text>
         <Stepper id={@id} name={@name} value={@value} {@rest}></Stepper>
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "TextEditor"} = assigns) do
+  def input(%{type: "TextEditor"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
+        <Text template="label">{@label}</Text>
         <TextEditor id={@id} name={@name} text={@value} {@rest} />
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "TextField"} = assigns) do
+  def input(%{type: "TextField"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <TextField id={@id} name={@name} text={@value} prompt={@prompt} {@rest}><%= @placeholder || @label %></TextField>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "SecureField"} = assigns) do
+  def input(%{type: "SecureField"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <SecureField id={@id} name={@name} text={@value} prompt={@prompt} {@rest}><%= @placeholder || @label %></SecureField>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
 
-  def input(%{type: "Toggle"} = assigns) do
+  def input(%{type: "Toggle"} = assigns, _interface) do
     ~LVN"""
     <VStack alignment="leading">
       <LabeledContent>
-        <Text template="label"><%= @label %></Text>
+        <Text template="label">{@label}</Text>
         <Toggle id={@id} name={@name} isOn={Map.get(assigns, :checked, Map.get(assigns, :value))} {@rest}></Toggle>
       </LabeledContent>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </VStack>
     """
   end
@@ -229,7 +237,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   @doc type: :component
   slot :inner_block, required: true
 
-  def error(assigns) do
+  def error(assigns, _interface) do
     ~LVN"""
     <Group style="font(.caption); foregroundStyle(.red)">
       <%= render_slot(@inner_block) %>
@@ -248,7 +256,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   slot :subtitle
   slot :actions
 
-  def header(assigns) do
+  def header(assigns, _interface) do
     ~LVN"""
     <VStack style={[
       "navigationTitle(:title)",
@@ -290,7 +298,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   attr :on_cancel, :string, default: nil
   slot :inner_block, required: true
 
-  def modal(assigns) do
+  def modal(assigns, _interface) do
     ~LVN"""
     <VStack
       id={@id}
@@ -322,7 +330,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
-  def flash(assigns) do
+  def flash(assigns, _interface) do
     assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
 
     ~LVN"""
@@ -338,7 +346,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
       id={@id}
       {@rest}
     >
-      <Text template="message"><%= msg %></Text>
+      <Text template="message">{msg}</Text>
       <Button template="actions" phx-click="lv:clear-flash" phx-value-key={@kind}>OK</Button>
     </VStack>
     """
@@ -354,7 +362,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   attr :flash, :map, required: true, doc: "the map of flash messages"
   attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
 
-  def flash_group(assigns) do
+  def flash_group(assigns, _interface) do
     ~LVN"""
     <Group id={@id}>
       <.flash kind={:info} title={"Success!"} flash={@flash} />
@@ -369,8 +377,8 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   ## Examples
 
       <.simple_form for={@form} phx-change="validate" phx-submit="save">
-        <.input field={@form[:email]} label="Email"/>
-        <.input field={@form[:username]} label="Username" />
+        <.input type="TextField" field={@form[:email]} label="Email"/>
+        <.input type="TextField" field={@form[:username]} label="Username" />
         <:actions>
           <.button type="submit">Save</.button>
         </:actions>
@@ -387,15 +395,31 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
     include: ~w(autocomplete name rel action enctype method novalidate target multipart),
     doc: "the arbitrary attributes to apply to the form tag"
 
-  slot :inner_block, required: true
+  slot :inner_block, required: true, doc: "won't be rendered if section slots are passed in"
   slot :actions, doc: "the slot for form actions, such as a submit button"
+  slot :section, required: false, doc: "slot for creating sections inside the form" do
+    attr :is_expanded, :boolean, doc: "a boolean value that determines the section’s expansion state (expanded or collapsed)"
+    attr :header, :string, doc: "text to use as a section's header"
+    attr :footer, :string, doc: "text to use as a section's footer"
+  end
 
-  def simple_form(assigns) do
+  def simple_form(assigns, _interface) do
     ~LVN"""
     <.form :let={f} for={@for} as={@as} {@rest}>
       <Form>
-        <%= render_slot(@inner_block, f) %>
-        <Section>
+        <%= if @section == [] do %>
+          <%= render_slot(@inner_block, f) %>
+        <% else %>
+          <%= for section <- @section do %>
+            <Section>
+              <Text :if={not is_nil(Map.get(section, :header))} template={:header} content={Map.get(section, :header)} />
+
+              <%= render_slot(section) %>
+              <Text :if={not is_nil(Map.get(section, :footer))} template={:footer} content={Map.get(section, :footer)} />
+            </Section>
+          <% end %>
+        <% end %>
+        <Section :if={@actions != []}>
           <%= for action <- @actions do %>
             <%= render_slot(action, f) %>
           <% end %>
@@ -420,10 +444,10 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
 
   slot :inner_block, required: true
 
-  def button(%{ type: "submit" } = assigns) do
+  def button(%{ type: "submit" } = assigns, _interface) do
     ~LVN"""
     <Section>
-      <LiveSubmitButton style={[
+      <LiveButton style={[
         "buttonStyle(.borderedProminent)",
         "controlSize(.large)",
         "listRowInsets(EdgeInsets())",
@@ -435,12 +459,12 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
         ]}>
           <%= render_slot(@inner_block) %>
         </Group>
-      </LiveSubmitButton>
+      </LiveButton>
     </Section>
     """
   end
 
-  def button(assigns) do
+  def button(assigns, _interface) do
     ~LVN"""
     <Button {@rest}>
       <%= render_slot(@inner_block) %>
@@ -474,7 +498,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
 
   slot :action, doc: "the slot for showing user actions in the last table column"
 
-  def table(assigns) do
+  def table(assigns, _interface) do
     ~LVN"""
     <Table id={@id}>
       <Group template="columns">
@@ -514,7 +538,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
     attr :title, :string, required: true
   end
 
-  def list(assigns) do
+  def list(assigns, _interface) do
     ~LVN"""
     <List>
       <LabeledContent :for={item <- @item}>
@@ -538,7 +562,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
   attr :name, :string, required: true
   attr :rest, :global
 
-  def icon(assigns) do
+  def icon(assigns, _interface) do
     ~LVN"""
     <Image systemName={@name} {@rest} />
     """
@@ -592,7 +616,7 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
     attr :style, :string
   end
 
-  def image(assigns) do
+  def image(assigns, _interface) do
     ~LVN"""
     <AsyncImage url={@url} {@rest}>
       <Group template="phase.empty" :if={@empty != []}>
@@ -604,13 +628,13 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
     """
   end
 
-  defp image_success(%{ slot: [%{ inner_block: nil }] } = assigns) do
+  defp image_success(%{ slot: [%{ inner_block: nil }] } = assigns, _interface) do
     ~LVN"""
     <AsyncImage image template="phase.success" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
-  defp image_success(assigns) do
+  defp image_success(assigns, _interface) do
     ~LVN"""
     <Group template="phase.success" :if={@slot != []}>
       <%= render_slot(@slot) %>
@@ -618,13 +642,13 @@ defmodule ThinkingAllowedWeb.CoreComponents.SwiftUI do
     """
   end
 
-  defp image_failure(%{ slot: [%{ inner_block: nil }] } = assigns) do
+  defp image_failure(%{ slot: [%{ inner_block: nil }] } = assigns, _interface) do
     ~LVN"""
     <AsyncImage error template="phase.failure" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
-  defp image_failure(assigns) do
+  defp image_failure(assigns, _interface) do
     ~LVN"""
     <Group template="phase.failure" :if={@slot != []}>
       <%= render_slot(@slot) %>

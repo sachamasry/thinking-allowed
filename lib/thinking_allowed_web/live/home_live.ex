@@ -5,6 +5,10 @@ defmodule ThinkingAllowedWeb.HomeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :counter, 0)}
+    {:ok, socket}
+  end
+
+  def handle_event("navigate", %{"to" => path}, socket) do
+    {:noreply, push_navigate(socket, to: path)}
   end
 end

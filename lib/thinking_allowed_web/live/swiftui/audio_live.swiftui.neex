@@ -1,0 +1,19 @@
+<VStack spacing="20">
+  <Text>🎙️ Voice Recorder</Text>
+
+  <Button :if={!@recording && is_nil(@audio_url)} id="start-recording-button" phx-click="start_recording" phx-hook="AudioRecorder">
+    <Text>🎤 Start Recording</Text>
+  </Button>
+
+  <Button :if={@recording} id="stop-recording-button" phx-click="stop_recording" phx-hook="AudioRecorder">
+    <Text>⏹ Stop Recording</Text>
+  </Button>
+
+  <Group :if={@audio_url}>
+    <AudioPlayer src={@audio_url} controls={true} />
+    
+    <Button id="delete-recording-button" phx-click="delete_audio">
+      <Text>🗑️ Delete Recording</Text>
+    </Button>
+  </Group>
+</VStack>
