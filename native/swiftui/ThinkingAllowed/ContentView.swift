@@ -6,6 +6,7 @@
 import SwiftUI
 import LiveViewNative
 import LiveViewNativeLiveForm
+import AVFoundation
 
 struct ContentView: View {
     var body: some View {
@@ -28,6 +29,19 @@ struct ContentView: View {
             }
         } error: { error in
             ErrorView(error: error)
+        }
+        .onAppear {
+            requestMicrophonePermission()
+        }
+    }
+}
+
+func requestMicrophonePermission() {
+    AVAudioSession.sharedInstance().requestRecordPermission { granted in
+        if granted {
+            print("Microphone permission granted.")
+        } else {
+            print("Microphone permission denied.")
         }
     }
 }

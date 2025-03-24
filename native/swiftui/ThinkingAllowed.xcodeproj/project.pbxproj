@@ -36,6 +36,7 @@
 		6681C70DF32492A3E4CFBBE7 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
 		78D5BC24DD145BDE2C3464C7 /* ReconnectingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectingView.swift; sourceTree = "<group>"; };
 		843393C0A055020D0A2A3ABC /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		99A896172D90FF040083694B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9D7F2FAD70D7CE00482D5E5B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A70DE16536A8A22A369E656D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF8CA92D1CBABA33CF57DD9A /* ThinkingAllowed Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ThinkingAllowed Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +85,7 @@
 		B3D26627DD344EFA88938626 /* ThinkingAllowed */ = {
 			isa = PBXGroup;
 			children = (
+				99A896172D90FF040083694B /* Info.plist */,
 				C2EDC3584020714E1D3C0F74 /* Preview Content */,
 				A70DE16536A8A22A369E656D /* Assets.xcassets */,
 				3B88CDDFBF1E514C6E6CAE41 /* ConnectingView.swift */,
@@ -324,6 +326,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEVELOPMENT_TEAM = C472L2ZJGG;
+				INFOPLIST_FILE = ThinkingAllowed/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ThinkingAllowed;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Permission is needed to use your microphone for audio recording.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.example.ThinkingAllowed;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -356,10 +364,18 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				DEVELOPMENT_TEAM = C472L2ZJGG;
+				INFOPLIST_FILE = ThinkingAllowed/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ThinkingAllowed;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Permission is needed to use your microphone for audio recording.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.example.ThinkingAllowed;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				NEW_SETTING = "";
+				NSMicrophoneUsageDescription = "\"We need access to your microphone to record audio.\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ThinkingAllowed;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator appletvos appletvsimulator macosx";
