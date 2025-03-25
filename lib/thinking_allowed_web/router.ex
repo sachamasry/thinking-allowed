@@ -23,9 +23,11 @@ defmodule ThinkingAllowedWeb.Router do
     pipe_through :browser
 
     # get "/", PageController, :home
+    #live "/", Phoenix.LiveView.FallbackLive
     live "/", HomeLive
     live "/recorder", RecorderLive
     live "/audio", AudioLive
+
 
   end
 
