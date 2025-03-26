@@ -1,4 +1,4 @@
-defmodule WhisperTranscriber do
+defmodule ThinkingAllowed.WhisperTranscriber do
   @moduledoc """
   Speech-to-text transcription using Bumblebee and Whisper model
   """
@@ -31,9 +31,11 @@ defmodule WhisperTranscriber do
       Bumblebee.Audio.speech_to_text_whisper(whisper, featurizer, tokenizer, generation_config,
         chunk_num_seconds: 30,
         client_batch_size: 1,
+        compile: [batch_size: 1],
         task: :transcribe,
         defn_options: [compiler: EXLA],
-        streaming: true
+        timestamps: :segments
+        # stream: true
       )
   end
 
@@ -58,6 +60,12 @@ defmodule WhisperTranscriber do
 
     # transcription
 
-    output = Nx.Serving.run(serving(), {:file, audio_path})
+    # output = Nx.Serving.run(serving(), {:file, audio_path})
+  end
+
+  def start_link(_opts) do
+    serving = serving()
+
+    Nx.Serving.start_link(serving: serving, name: __MODULE__, batch_timeout: 100)
   end
 end

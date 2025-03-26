@@ -27,7 +27,7 @@ defmodule ThinkingAllowedWeb.Router do
     live "/", HomeLive
     live "/recorder", RecorderLive
     live "/audio", AudioLive
-
+    live "/speech-to-text", SpeechToText
 
   end
 

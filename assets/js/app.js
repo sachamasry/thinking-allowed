@@ -23,14 +23,153 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 import AudioRecorder from "./hooks";
-let hooks = { AudioRecorder };
+
+let Hooks = {}
+
+// let hooks = { AudioRecorder };
+
+Hooks.Microphone = {
+  mounted() {
+    this.mediaRecorder = null;
+
+    // Check for browser support
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      console.error("Browser does not support microphone access")
+      return
+    }
+
+    this.el.addEventListener("mousedown", (event) => {
+      this.startRecording();
+    });
+
+    this.el.addEventListener("mouseup", (event) => {
+      this.stopRecording();
+    });
+  },
+
+  startRecording() {
+    this.audioChunks = [];
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      this.mediaRecorder = new MediaRecorder(stream);
+
+      this.mediaRecorder.addEventListener("dataavailable", (event) => {
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data);
+        }
+      });
+
+      this.mediaRecorder.start();
+    }).catch(err => {
+      console.error("Error accessing microphone", err);
+    });
+  },
+
+  stopRecording() {
+    if (!this.mediaRecorder) return;
+
+    this.mediaRecorder.addEventListener("stop", (event) => {
+      if (this.audioChunks.length === 0) return;
+
+      const audioBlob = new Blob(this.audioChunks);
+
+      audioBlob.arrayBuffer().then((buffer) => {
+        const context = new AudioContext({ sampleRate: SAMPLING_RATE });
+
+        context.decodeAudioData(buffer, (audioBuffer) => {
+          const pcmBuffer = this.audioBufferToPcm(audioBuffer);
+          const buffer = this.convertEndianness32(
+            pcmBuffer,
+            this.getEndianness(),
+            this.el.dataset.endianness || this.getEndianness()
+          );
+          
+          // Convert buffer to base64 for LiveView
+          //const base64data = btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
+          
+          // Push event to LiveView
+          //this.pushEvent("audio_recorded", { audio: base64data });
+          this.upload("audio", [new Blob([buffer])]);
+        });
+      });
+    });
+
+    this.mediaRecorder.stop();
+  },
+
+  isRecording() {
+    return this.mediaRecorder && this.mediaRecorder.state === "recording";
+  },
+
+  audioBufferToPcm(audioBuffer) {
+    const numChannels = audioBuffer.numberOfChannels;
+    const length = audioBuffer.length;
+
+    const size = Float32Array.BYTES_PER_ELEMENT * length;
+    const buffer = new ArrayBuffer(size);
+
+    const pcmArray = new Float32Array(buffer);
+
+    const channelDataBuffers = Array.from(
+      { length: numChannels },
+      (x, channel) => audioBuffer.getChannelData(channel)
+    );
+
+    // Average all channels upfront, so the PCM is always mono
+    for (let i = 0; i < pcmArray.length; i++) {
+      let sum = 0;
+
+      for (let channel = 0; channel < numChannels; channel++) {
+        sum += channelDataBuffers[channel][i];
+      }
+
+      pcmArray[i] = sum / numChannels;
+    }
+
+    return buffer;
+  },
+
+  convertEndianness32(buffer, from, to) {
+    if (from === to) {
+      return buffer;
+    }
+
+    const uint8Array = new Uint8Array(buffer);
+
+    // If the endianness differs, we swap bytes accordingly
+    for (let i = 0; i < uint8Array.length; i += 4) {
+      const b1 = uint8Array[i];
+      const b2 = uint8Array[i + 1];
+      const b3 = uint8Array[i + 2];
+      const b4 = uint8Array[i + 3];
+      
+      uint8Array[i] = b4;
+      uint8Array[i + 1] = b3;
+      uint8Array[i + 2] = b2;
+      uint8Array[i + 3] = b1;
+    }
+
+    return uint8Array.buffer;
+  },
+
+  getEndianness() {
+    const buffer = new ArrayBuffer(2);
+    const int16Array = new Uint16Array(buffer);
+    const int8Array = new Uint8Array(buffer);
+
+    int16Array[0] = 1;
+
+    return int8Array[0] === 1 ? "little" : "big";
+  },
+};
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content") || "";
 
 let liveSocket = new LiveSocket("/live", Socket, {
     longPollFallbackMs: 2500,
     params: {_csrf_token: csrfToken},
-    hooks
+    hooks: Hooks
 })
 
 // Show progress bar on live navigation and form submits
