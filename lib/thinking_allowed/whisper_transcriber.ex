@@ -4,12 +4,16 @@ defmodule ThinkingAllowed.WhisperTranscriber do
   """
 
   def load_model(model_variant \\ :base) do
-    {:ok, whisper} = Bumblebee.load_model({:hf, "openai/whisper-large-v3-turbo"})
-    {:ok, featurizer} = Bumblebee.load_featurizer({:hf, "openai/whisper-large-v3-turbo"})
-    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "openai/whisper-large-v3-turbo"})
+    {:ok, whisper} = Bumblebee.load_model({:hf, "openai/whisper-large-v3-turbo", offline: true})
+
+    {:ok, featurizer} =
+      Bumblebee.load_featurizer({:hf, "openai/whisper-large-v3-turbo", offline: true})
+
+    {:ok, tokenizer} =
+      Bumblebee.load_tokenizer({:hf, "openai/whisper-large-v3-turbo", offline: true})
 
     {:ok, generation_config} =
-      Bumblebee.load_generation_config({:hf, "openai/whisper-large-v3-turbo"})
+      Bumblebee.load_generation_config({:hf, "openai/whisper-large-v3-turbo", offline: true})
 
     %{
       whisper: whisper,
